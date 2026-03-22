@@ -44,7 +44,14 @@ public partial class RadialTreeGenerator : Node2D
         Bubbles.Clear();
         Branches.Clear();
         
-        Bubbles.AddBubble(Vector2.Zero, 50f);
+        // SMOKE TEST
+        Bubbles.MeshUnitsToPixels = 1.0f;
+        Bubbles.AddBubble(Vector2.Zero, 50.0f);
+        Bubbles.AddBubble(new Vector2(200.0f, 0.0f), 25.0f);
+        Bubbles.AddBubble(new Vector2(0.0f, 200.0f), 10.0f);
+
+        GD.Print("Smoke test bubbles added.");
+        return;
 
         if (packages.Count == 0)
         {

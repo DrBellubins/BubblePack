@@ -35,7 +35,7 @@ public partial class CameraControls : Camera2D
 		
 		setZoom(zoom);
 		
-		GD.Print($"Zoom: {GetZoom().X}");
+		//GD.Print($"Zoom: {GetZoom().X}");
 		
 		if (isDragging)
 			Position -= mouseDelta;

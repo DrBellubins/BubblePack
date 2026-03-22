@@ -19,6 +19,17 @@ public partial class Bubbles : MultiMeshInstance2D
             GD.PushError("Bubbles: Multimesh.Mesh is null. Assign a mesh to the MultiMesh resource.");
             return;
         }
+        
+        // CRITICAL: Ensure Godot treats instance transforms as 2D.
+        Multimesh.TransformFormat = MultiMesh.TransformFormatEnum.Transform2D;
+
+        // Optional but useful to prevent “invisible due to material” scenarios while debugging.
+        if (Material == null)
+        {
+            var mat = new CanvasItemMaterial();
+            mat.BlendMode = CanvasItemMaterial.BlendModeEnum.Mix;
+            Material = mat;
+        }
 
         GD.Print($"Bubbles: Mesh type = {Multimesh.Mesh.GetClass()}");
     }
@@ -65,7 +76,7 @@ public partial class Bubbles : MultiMeshInstance2D
 
         if (index < 3)
         {
-            GD.Print($"Bubble[{index}] pos={position} radiusPx={radiusPixels} diameterScale={diameter}");
+            GD.Print($"AddBubble idx={index} pos={position} radius={radiusPixels} diameterScale={diameter} count={Multimesh.InstanceCount}");
         }
 
         return index;
