@@ -3,13 +3,11 @@ using System;
 
 public partial class RadialTreeGenerator : Node
 {
-	private LinuxPackageUtils.PackageManagerType packageManagerType;
-	private string[] installedPackages = new string[] {};
+	private LPU.PackageManagerType packageManagerType;
 	
 	public override void _Ready()
 	{
-		packageManagerType = LinuxPackageUtils.DetectPackageManager();
-		installedPackages = LinuxPackageUtils.GetInstalledPackages();
+		packageManagerType = LPU.DetectPackageManager();
 	}
 
 	private bool hasRun = false;
@@ -17,9 +15,6 @@ public partial class RadialTreeGenerator : Node
 	{
 		if (!hasRun)
 		{
-			foreach (var package in installedPackages)
-				GD.Print(package);
-			
 			hasRun = true;
 		}
 	}

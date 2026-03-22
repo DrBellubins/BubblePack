@@ -11,5 +11,5 @@ public struct PackageData
 	public string Version;
 	public string Author;
 	public float SizeInMB;
-	public List<PackageData> Dependencies;
+	public List<string> Dependencies;
 }

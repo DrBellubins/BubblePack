@@ -3,7 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-public static class LinuxPackageUtils
+/// <summary>
+/// A set of utilities for managing linux packages
+/// </summary>
+public static class LPU
 {
     public enum PackageManagerType
     {
@@ -35,7 +38,33 @@ public static class LinuxPackageUtils
         return PackageManagerType.Unknown;
     }
 
-    public static string[] GetInstalledPackages()
+    public static string RunBash(string command)
+    {
+        var psi = new ProcessStartInfo
+        {
+            FileName = "/bin/bash",
+            Arguments = $"-c \"{command}\"",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        using var process = Process.Start(psi);
+        string stdout = process.StandardOutput.ReadToEnd();
+        string stderr = process.StandardError.ReadToEnd();
+
+        process.WaitForExit();
+
+        if (process.ExitCode != 0)
+        {
+            throw new InvalidOperationException($"Command failed ({process.ExitCode}): {command}\n{stderr}");
+        }
+
+        return stdout;
+    }
+    
+    /*public static string[] GetInstalledPackages()
     {
         var pm = DetectPackageManager();
         
@@ -73,5 +102,5 @@ public static class LinuxPackageUtils
                      .Select(line => line.Trim())
                      .Where(pkg => !string.IsNullOrWhiteSpace(pkg))
                      .ToArray();
-    }
+    }*/
 }
