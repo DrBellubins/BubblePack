@@ -43,6 +43,8 @@ public partial class RadialTreeGenerator : Node2D
 
         Bubbles.Clear();
         Branches.Clear();
+        
+        Bubbles.AddBubble(Vector2.Zero, 50f);
 
         if (packages.Count == 0)
         {

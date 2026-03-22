@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://2gcp1xmpsup8"]
 
 [ext_resource type="Script" uid="uid://bcwk3xlynqhgw" path="res://Scripts/RadialTreeGenerator.cs" id="1_52fb6"]
-[ext_resource type="ArrayMesh" uid="uid://cmixrp8882770" path="res://Models/CircleMesh.tres" id="2_6l7je"]
+[ext_resource type="ArrayMesh" uid="uid://2v8ti351qdnh" path="res://Models/CircleMesh.res" id="2_iacmt"]
 [ext_resource type="Script" uid="uid://cigmye7wlqikb" path="res://Scripts/RadialTree/Bubbles.cs" id="3_jv6wh"]
 [ext_resource type="Script" uid="uid://wtupeqg5pcb2" path="res://Scripts/RadialTree/TreeLines.cs" id="4_x6ack"]
 [ext_resource type="Script" uid="uid://dgh2wt0y3afcl" path="res://Scripts/CameraControls.cs" id="5_iacmt"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_52fb6"]
-mesh = ExtResource("2_6l7je")
+mesh = ExtResource("2_iacmt")
 
 [node name="MainScene" type="Node2D" unique_id=1781814066 node_paths=PackedStringArray("Bubbles", "Branches")]
 script = ExtResource("1_52fb6")
@@ -24,4 +24,8 @@ script = ExtResource("4_x6ack")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=269796135]
 position_smoothing_enabled = true
 script = ExtResource("5_iacmt")
-ZoomSpeed = 0.25
+ZoomSpeed = 2.0
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=499772682]
+position = Vector2(4, 2)
+mesh = ExtResource("2_iacmt")

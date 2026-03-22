@@ -4,6 +4,7 @@ using System;
 public partial class CameraControls : Camera2D
 {
 	[Export] public float ZoomSpeed = 1.5f;
+	[Export] public float StartZoom = 50f;
 	
 	private Vector2 mouseDelta = Vector2.Zero;
 	
@@ -11,6 +12,7 @@ public partial class CameraControls : Camera2D
 	
 	public override void _Ready()
 	{
+		setZoom(StartZoom);
 	}
 
 	public override void _Input(InputEvent @event)
@@ -31,13 +33,17 @@ public partial class CameraControls : Camera2D
 
 		zoom = Mathf.Clamp(zoom, 0.5f, 100f);
 		
-		SetZoom(new Vector2(zoom, zoom));
+		setZoom(zoom);
 		
-		GD.Print($"Zoom: {zoom}");
+		GD.Print($"Zoom: {GetZoom().X}");
 		
 		if (isDragging)
-		{
 			Position -= mouseDelta;
-		}
+	}
+
+	private void setZoom(float zoomAmount)
+	{
+		zoom = zoomAmount;
+		SetZoom(new Vector2(zoom, zoom));
 	}
 }
