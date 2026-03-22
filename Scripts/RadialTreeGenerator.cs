@@ -3,8 +3,11 @@ using System;
 using System.Collections.Generic;
 using BubblePack.Scripts;
 
-public partial class RadialTreeGenerator : Node
+public partial class RadialTreeGenerator : Node2D
 {
+	[Export] public Bubbles Bubbles;
+	[Export] public TreeLines Branches;
+	
 	private LPU.PackageManagerType packageManagerType;
 	private Dictionary<string, PackageData> packages = new();
 	

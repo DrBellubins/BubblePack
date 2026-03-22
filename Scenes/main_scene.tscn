@@ -1,6 +1,17 @@
 [gd_scene format=3 uid="uid://2gcp1xmpsup8"]
 
 [ext_resource type="Script" uid="uid://bcwk3xlynqhgw" path="res://Scripts/RadialTreeGenerator.cs" id="1_52fb6"]
+[ext_resource type="ArrayMesh" uid="uid://cmixrp8882770" path="res://Models/CircleMesh.tres" id="2_6l7je"]
 
-[node name="MainScene" type="Node2D" unique_id=1781814066]
+[sub_resource type="MultiMesh" id="MultiMesh_52fb6"]
+mesh = ExtResource("2_6l7je")
+
+[node name="MainScene" type="Node2D" unique_id=1781814066 node_paths=PackedStringArray("Bubbles", "Branches")]
 script = ExtResource("1_52fb6")
+Bubbles = NodePath("CircleMeshes")
+Branches = NodePath("Lines")
+
+[node name="CircleMeshes" type="MultiMeshInstance2D" parent="." unique_id=593630600]
+multimesh = SubResource("MultiMesh_52fb6")
+
+[node name="Lines" type="Node2D" parent="." unique_id=207942342]
