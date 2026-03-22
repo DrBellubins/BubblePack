@@ -21,25 +21,8 @@ public partial class RadialTreeGenerator : Node
 			GD.PushWarning($"Package manager {packageManagerType} not implemented yet.");
 	}
 
-	private bool hasRun = false;
 	public override void _Process(double delta)
 	{
-		if (!hasRun)
-		{
-			// Quick sanity check output
-			int printed = 0;
-			foreach (var kvp in packages)
-			{
-				var pkg = kvp.Value;
-				GD.Print($"{pkg.Name} {pkg.Version} {pkg.SizeInMB}MB deps={pkg.Dependencies?.Count ?? 0}");
-
-				printed++;
-				
-				if (printed >= 10)
-					break;
-			}
-
-			hasRun = true;
-		}
+		
 	}
 }
