@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 public partial class Bubbles : MultiMeshInstance2D
@@ -19,17 +20,6 @@ public partial class Bubbles : MultiMeshInstance2D
             GD.PushError("Bubbles: Multimesh.Mesh is null. Assign a mesh to the MultiMesh resource.");
             return;
         }
-        
-        // CRITICAL: Ensure Godot treats instance transforms as 2D.
-        Multimesh.TransformFormat = MultiMesh.TransformFormatEnum.Transform2D;
-
-        // Optional but useful to prevent “invisible due to material” scenarios while debugging.
-        if (Material == null)
-        {
-            var mat = new CanvasItemMaterial();
-            mat.BlendMode = CanvasItemMaterial.BlendModeEnum.Mix;
-            Material = mat;
-        }
 
         GD.Print($"Bubbles: Mesh type = {Multimesh.Mesh.GetClass()}");
     }
@@ -47,19 +37,16 @@ public partial class Bubbles : MultiMeshInstance2D
     public int AddBubble(Vector2 position, float radiusPixels)
     {
         if (Multimesh == null || Multimesh.Mesh == null)
-        {
             return -1;
-        }
 
         if (!float.IsFinite(radiusPixels) || radiusPixels <= 0.01f)
-        {
             return -1;
-        }
 
         int index = _count;
         _count++;
 
         Multimesh.InstanceCount = _count;
+        Multimesh.VisibleInstanceCount = _count;
 
         // IMPORTANT:
         // Your Blender circle mesh might be "big" or "tiny" in its own units.
@@ -72,11 +59,16 @@ public partial class Bubbles : MultiMeshInstance2D
         // Scale around origin:
         xform = xform.Scaled(new Vector2(diameter, diameter));
 
+        var rng = new Random().NextSingle();
+        
+        xform = xform.Translated(new Vector2(rng, rng));
+
         Multimesh.SetInstanceTransform2D(index, xform);
 
         if (index < 3)
         {
-            GD.Print($"AddBubble idx={index} pos={position} radius={radiusPixels} diameterScale={diameter} count={Multimesh.InstanceCount}");
+            GD.Print($"AddBubble idx={index} pos={position} radius={radiusPixels}" +
+                     $" diameterScale={diameter} count={Multimesh.InstanceCount}");
         }
 
         return index;

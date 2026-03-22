@@ -18,7 +18,7 @@ public partial class RadialTreeGenerator : Node2D
 
     public override void _Ready()
     {
-        packageManagerType = LPU.DetectPackageManager();
+        /*packageManagerType = LPU.DetectPackageManager();
 
         if (packageManagerType == LPU.PackageManagerType.Pacman)
         {
@@ -30,6 +30,19 @@ public partial class RadialTreeGenerator : Node2D
         else
         {
             GD.PushWarning($"Package manager {packageManagerType} not implemented yet.");
+        }*/
+
+        for (int i = 0; i < Bubbles.Multimesh.InstanceCount; i++)
+        {
+            var transform = Transform2D.Identity;
+            
+            var rngX = new Random().NextSingle();
+            var rngY = new Random().NextSingle();
+            
+            transform = transform.Translated(new Vector2(rngX * 10f, rngY * 10f));
+            transform = transform.Scaled(new Vector2(1f, 1f));
+            
+            Bubbles.Multimesh.SetInstanceTransform2D(i, transform);
         }
     }
 
@@ -43,15 +56,6 @@ public partial class RadialTreeGenerator : Node2D
 
         Bubbles.Clear();
         Branches.Clear();
-        
-        // SMOKE TEST
-        Bubbles.MeshUnitsToPixels = 1.0f;
-        Bubbles.AddBubble(Vector2.Zero, 50.0f);
-        Bubbles.AddBubble(new Vector2(200.0f, 0.0f), 25.0f);
-        Bubbles.AddBubble(new Vector2(0.0f, 200.0f), 10.0f);
-
-        GD.Print("Smoke test bubbles added.");
-        return;
 
         if (packages.Count == 0)
         {
