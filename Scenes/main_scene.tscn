@@ -1,3 +1,6 @@
 [gd_scene format=3 uid="uid://2gcp1xmpsup8"]
 
+[ext_resource type="Script" uid="uid://bcwk3xlynqhgw" path="res://Scripts/RadialTreeGenerator.cs" id="1_52fb6"]
+
 [node name="MainScene" type="Node2D" unique_id=1781814066]
+script = ExtResource("1_52fb6")

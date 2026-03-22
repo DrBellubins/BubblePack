@@ -1,15 +1,15 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
-public partial class PackageData : Node
+namespace BubblePack.Scripts;
+
+public struct PackageData
 {
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
-	}
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-	}
+	public string Name;
+	public string Description;
+	public string Version;
+	public string Author;
+	public float SizeInMB;
+	public List<PackageData> Dependencies;
 }
