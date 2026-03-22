@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://bcwk3xlynqhgw" path="res://Scripts/RadialTreeGenerator.cs" id="1_52fb6"]
 [ext_resource type="ArrayMesh" uid="uid://cmixrp8882770" path="res://Models/CircleMesh.tres" id="2_6l7je"]
+[ext_resource type="Script" uid="uid://cigmye7wlqikb" path="res://Scripts/RadialTree/Bubbles.cs" id="3_jv6wh"]
+[ext_resource type="Script" uid="uid://wtupeqg5pcb2" path="res://Scripts/RadialTree/TreeLines.cs" id="4_x6ack"]
+[ext_resource type="Script" uid="uid://dgh2wt0y3afcl" path="res://Scripts/CameraControls.cs" id="5_iacmt"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_52fb6"]
 mesh = ExtResource("2_6l7je")
@@ -13,5 +16,12 @@ Branches = NodePath("Lines")
 
 [node name="CircleMeshes" type="MultiMeshInstance2D" parent="." unique_id=593630600]
 multimesh = SubResource("MultiMesh_52fb6")
+script = ExtResource("3_jv6wh")
 
 [node name="Lines" type="Node2D" parent="." unique_id=207942342]
+script = ExtResource("4_x6ack")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=269796135]
+position_smoothing_enabled = true
+script = ExtResource("5_iacmt")
+ZoomSpeed = 0.25

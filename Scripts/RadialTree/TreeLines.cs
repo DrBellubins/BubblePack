@@ -1,19 +1,35 @@
 using Godot;
-using System;
+using System.Collections.Generic;
 
 public partial class TreeLines : Node2D
 {
-	public override void _Ready()
-	{
-	}
+    public struct Segment
+    {
+        public Vector2 A;
+        public Vector2 B;
+        public Color Color;
+    }
 
-	public override void _Process(double delta)
-	{
-	}
+    [Export] public float LineWidth { get; set; } = 1.0f;
 
-	public override void _Draw()
-	{
-		// Placeholder:
-		DrawLine(Vector2.Zero, new Vector2(), Colors.White);
-	}
+    private readonly List<Segment> _segments = new();
+
+    public void Clear()
+    {
+        _segments.Clear();
+        QueueRedraw();
+    }
+
+    public void SetSegments(List<Segment> segments)
+    {
+        _segments.Clear();
+        _segments.AddRange(segments);
+        QueueRedraw();
+    }
+
+    public override void _Draw()
+    {
+        foreach (Segment s in _segments)
+            DrawLine(s.A, s.B, s.Color, LineWidth);
+    }
 }
