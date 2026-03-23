@@ -18,7 +18,7 @@ public partial class RadialTreeGenerator : Node2D
 
     public override void _Ready()
     {
-        /*packageManagerType = LPU.DetectPackageManager();
+        packageManagerType = LPU.DetectPackageManager();
 
         if (packageManagerType == LPU.PackageManagerType.Pacman)
         {
@@ -30,9 +30,9 @@ public partial class RadialTreeGenerator : Node2D
         else
         {
             GD.PushWarning($"Package manager {packageManagerType} not implemented yet.");
-        }*/
+        }
 
-        for (int i = 0; i < Bubbles.Multimesh.InstanceCount; i++)
+        /*for (int i = 0; i < Bubbles.Multimesh.InstanceCount; i++)
         {
             var transform = Transform2D.Identity;
             
@@ -43,7 +43,7 @@ public partial class RadialTreeGenerator : Node2D
             transform = transform.Scaled(new Vector2(1f, 1f));
             
             Bubbles.Multimesh.SetInstanceTransform2D(i, transform);
-        }
+        }*/
     }
 
     private void BuildVisualization()
@@ -58,9 +58,7 @@ public partial class RadialTreeGenerator : Node2D
         Branches.Clear();
 
         if (packages.Count == 0)
-        {
             return;
-        }
 
         // Pick a root: largest installed size.
         PackageData root = packages.Values

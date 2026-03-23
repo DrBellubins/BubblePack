@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
 public partial class Bubbles : MultiMeshInstance2D
@@ -7,6 +8,8 @@ public partial class Bubbles : MultiMeshInstance2D
     
     private int _count;
 
+    private List<Vector2> _positions = new();
+    
     public override void _Ready()
     {
         if (Multimesh == null)
@@ -22,6 +25,14 @@ public partial class Bubbles : MultiMeshInstance2D
         }
 
         GD.Print($"Bubbles: Mesh type = {Multimesh.Mesh.GetClass()}");
+    }
+
+    public override void _Draw()
+    {
+        foreach (Vector2 position in _positions)
+        {
+            DrawCircle(position, 1f, Colors.White);
+        }
     }
 
     public void Clear()
@@ -45,6 +56,8 @@ public partial class Bubbles : MultiMeshInstance2D
         int index = _count;
         _count++;
 
+        _positions.Add(position);
+        
         Multimesh.InstanceCount = _count;
         Multimesh.VisibleInstanceCount = _count;
 
@@ -58,10 +71,6 @@ public partial class Bubbles : MultiMeshInstance2D
 
         // Scale around origin:
         xform = xform.Scaled(new Vector2(diameter, diameter));
-
-        var rng = new Random().NextSingle();
-        
-        xform = xform.Translated(new Vector2(rng, rng));
 
         Multimesh.SetInstanceTransform2D(index, xform);
 
