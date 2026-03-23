@@ -74,11 +74,8 @@ public partial class Bubbles : MultiMeshInstance2D
 
         Multimesh.SetInstanceTransform2D(index, xform);
 
-        if (index < 3)
-        {
-            GD.Print($"AddBubble idx={index} pos={position} radius={radiusPixels}" +
-                     $" diameterScale={diameter} count={Multimesh.InstanceCount}");
-        }
+        GD.Print($"AddBubble idx={index} pos={position} radius={radiusPixels}" +
+                 $" diameterScale={diameter} count={Multimesh.InstanceCount}");
 
         return index;
     }
