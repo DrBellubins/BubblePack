@@ -4,8 +4,10 @@ using System;
 public partial class CameraControls : Camera2D
 {
     [Export] public float ZoomSpeed = 1.5f;
-    [Export] public float StartZoom = 50f;
-
+    [Export] public float StartZoom = 1.0f;
+    [Export] public float ZoomMin = 1.0f;
+    [Export] public float ZoomMax = 100.0f;
+    
     private bool _isDragging;
     private Vector2 _dragStartMouseScreen;
     private Vector2 _dragStartCameraPosition;
@@ -48,34 +50,16 @@ public partial class CameraControls : Camera2D
         if (@event.IsActionPressed("mouse_wheel_up"))
         {
             _zoom *= 1.1f;
-            _zoom = Mathf.Clamp(_zoom, 0.1f, 5.0f);
+            _zoom = Mathf.Clamp(_zoom, ZoomMin, ZoomMax);
             SetZoomAmount(_zoom);
         }
 
         if (@event.IsActionPressed("mouse_wheel_down"))
         {
             _zoom /= 1.1f;
-            _zoom = Mathf.Clamp(_zoom, 0.1f, 5.0f);
+            _zoom = Mathf.Clamp(_zoom, ZoomMin, ZoomMax);
             SetZoomAmount(_zoom);
         }
-    }
-
-    public override void _Process(double delta)
-    {
-        if (!_isDragging)
-        {
-            return;
-        }
-
-        Vector2 mouseNowScreen = GetViewport().GetMousePosition();
-
-        // Screen delta -> world delta.
-        // When zoom is larger, moving the mouse should move the camera more in world units.
-        Vector2 screenDelta = mouseNowScreen - _dragStartMouseScreen;
-        Vector2 worldDelta = screenDelta * Zoom;
-
-        // Subtract so the content "grabs" and follows the mouse.
-        Position = _dragStartCameraPosition - worldDelta;
     }
 
     private void SetZoomAmount(float zoomAmount)

@@ -28,6 +28,7 @@ script = ExtResource("4_x6ack")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=269796135]
 script = ExtResource("5_iacmt")
 ZoomSpeed = 2.0
+StartZoom = 50.0
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=499772682]
 position = Vector2(4, 2)
