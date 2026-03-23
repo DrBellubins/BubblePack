@@ -13,6 +13,7 @@ mesh = ExtResource("2_iacmt")
 script = ExtResource("1_52fb6")
 Bubbles = NodePath("CircleMeshes")
 Branches = NodePath("Lines")
+RingRadius = 50.0
 
 [node name="CircleMeshes" type="MultiMeshInstance2D" parent="." unique_id=593630600]
 multimesh = SubResource("MultiMesh_52fb6")
@@ -26,7 +27,3 @@ script = ExtResource("4_x6ack")
 script = ExtResource("5_iacmt")
 ZoomSpeed = 2.0
 StartZoom = 50.0
-
-[node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=499772682]
-position = Vector2(4, 2)
-mesh = ExtResource("2_iacmt")

@@ -86,22 +86,104 @@ public partial class RadialTreeGenerator : Node2D
         radii[root.Name] = RadiusFor(root);
         Bubbles.AddBubble(Vector2.Zero, radii[root.Name]);
 
-        // Put all other packages on a ring for now (simple & always stable)
-        var others = packages.Keys.Where(n => n != root.Name).OrderBy(n => n, StringComparer.Ordinal).ToList();
-        int nCount = others.Count;
-
-        for (int i = 0; i < nCount; i++)
+        // Build adjacency list (root -> dependencies)
+        var children = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+        
+        foreach ((string fromName, PackageData fromPkg) in packages)
         {
-            string name = others[i];
-            PackageData pkg = packages[name];
-
-            float angle = (Mathf.Tau * i) / Math.Max(1, nCount);
-            Vector2 pos = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * RingRadius;
-
-            positions[name] = pos;
-            radii[name] = RadiusFor(pkg);
-
-            Bubbles.AddBubble(pos, radii[name]);
+            if (fromPkg.Dependencies == null)
+            {
+                continue;
+            }
+        
+            foreach (string dep in fromPkg.Dependencies)
+            {
+                if (!packages.ContainsKey(dep))
+                {
+                    continue;
+                }
+        
+                if (!children.TryGetValue(fromName, out List<string> list))
+                {
+                    list = new List<string>();
+                    children[fromName] = list;
+                }
+        
+                if (!list.Contains(dep))
+                {
+                    list.Add(dep);
+                }
+            }
+        }
+        
+        // BFS to assign depth
+        var depth = new Dictionary<string, int>(StringComparer.Ordinal);
+        var q = new Queue<string>();
+        
+        depth[root.Name] = 0;
+        q.Enqueue(root.Name);
+        
+        while (q.Count > 0)
+        {
+            string cur = q.Dequeue();
+        
+            if (!children.TryGetValue(cur, out List<string> deps))
+            {
+                continue;
+            }
+        
+            int nextDepth = depth[cur] + 1;
+        
+            foreach (string dep in deps)
+            {
+                if (depth.ContainsKey(dep))
+                {
+                    continue;
+                }
+        
+                depth[dep] = nextDepth;
+                q.Enqueue(dep);
+            }
+        }
+        
+        // Group nodes by depth (ring)
+        var rings = new Dictionary<int, List<string>>();
+        foreach ((string name, int d) in depth)
+        {
+            if (!rings.TryGetValue(d, out List<string> list))
+            {
+                list = new List<string>();
+                rings[d] = list;
+            }
+        
+            list.Add(name);
+        }
+        
+        // Place nodes ring-by-ring
+        foreach ((int d, List<string> ringNodes) in rings.OrderBy(k => k.Key))
+        {
+            if (d == 0)
+            {
+                continue;
+            }
+        
+            float ringR = RingRadius * d;
+            int count = ringNodes.Count;
+        
+            ringNodes.Sort(StringComparer.Ordinal);
+        
+            for (int i = 0; i < count; i++)
+            {
+                string name = ringNodes[i];
+                PackageData pkg = packages[name];
+        
+                float angle = (Mathf.Tau * i) / Math.Max(1, count);
+                Vector2 pos = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * ringR;
+        
+                positions[name] = pos;
+                radii[name] = RadiusFor(pkg);
+                Bubbles.AddBubble(pos, radii[name]);
+            }
         }
 
         // Build dependency line segments.
