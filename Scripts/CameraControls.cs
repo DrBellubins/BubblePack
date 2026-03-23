@@ -21,29 +21,41 @@ public partial class CameraControls : Camera2D
     {
         if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
         {
-            if (mb.Pressed)
+            _isDragging = mb.Pressed;
+
+            if (_isDragging)
             {
-                _isDragging = true;
                 _dragStartMouseScreen = mb.Position;
                 _dragStartCameraPosition = Position;
             }
-            else
-            {
-                _isDragging = false;
-            }
+
+            return;
+        }
+
+        if (_isDragging && @event is InputEventMouseMotion mm)
+        {
+            Vector2 screenDelta = mm.Position - _dragStartMouseScreen;
+
+            Vector2 worldDelta = new Vector2(
+                screenDelta.X / Zoom.X,
+                screenDelta.Y / Zoom.Y
+            );
+
+            Position = _dragStartCameraPosition - worldDelta;
+            return;
         }
 
         if (@event.IsActionPressed("mouse_wheel_up"))
         {
-            _zoom += ZoomSpeed;
-            _zoom = Mathf.Clamp(_zoom, 0.5f, 100f);
+            _zoom *= 1.1f;
+            _zoom = Mathf.Clamp(_zoom, 0.1f, 5.0f);
             SetZoomAmount(_zoom);
         }
 
         if (@event.IsActionPressed("mouse_wheel_down"))
         {
-            _zoom -= ZoomSpeed;
-            _zoom = Mathf.Clamp(_zoom, 0.5f, 100f);
+            _zoom /= 1.1f;
+            _zoom = Mathf.Clamp(_zoom, 0.1f, 5.0f);
             SetZoomAmount(_zoom);
         }
     }
