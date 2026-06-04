@@ -1,0 +1,11 @@
+I am developing a linux package visualizer. I intend on supporting multiple distros. 
+
+I intend on displaying them in a radial tree format, with bubbles/nodes being connected based on their dependency tree. They will be auto laid out in a way that they are all visible at once, and the dependency connections (likely lines) are "elastically" laid out such that they don't cross. This creates a coherent visual of what each package does.
+
+I intend for the bubbles/nodes to be sized by a ratio of the amount of dependencies they have. Something like clamp(MinSize, MaxSize, Size * (MostDependencies / LeastDependencies))
+
+I'm invisioning something like Gource, branch-like animation and all, but for linux packages.
+
+I intend for the ability to click on the bubbles/nodes and opening a window describing everything about the package it associated with.
+
+I intend to have a terminal emulator with Frosted Glass aesthetic, but customized. I want this to be unnecessarily pretty, with rounded liquid glass look, with a frosted aesthetic. It will be rendered in order: fullscreen blur, noise (for frosty look), rounded cutout (for window), liquid glass-esque refraction. It will open and close like a vertical line (aka shutdown line) on an old tv. It will have a leading outline slightly above, and below the terminal window, that will slowly decrease in thickness until it becomes completely invisible at the same time the terminal open animation finishes playing, giving a leading 'wave' effect.
