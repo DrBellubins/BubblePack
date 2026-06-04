@@ -76,9 +76,11 @@ public partial class TerminalPostProcess : Node
             ResizePipeline(expected);
         }
 
-        if (DebugOutput != null && CaptureViewport != null)
+        Texture2D result = Execute();
+
+        if (DebugOutput != null && result != null)
         {
-            DebugOutput.Texture = CaptureViewport.GetTexture();
+            DebugOutput.Texture = result;
         }
     }
 

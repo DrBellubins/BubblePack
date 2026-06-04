@@ -15,6 +15,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="CaptureViewport" type="SubViewport" parent="." unique_id=180009778]
+
+[node name="BG" type="Sprite2D" parent="CaptureViewport" unique_id=1370447051]
+z_index = -999
+position = Vector2(1055.3743, 333.225)
+scale = Vector2(0.10562499, 0.10562499)
+texture = ExtResource("6_8g2d6")
+
 [node name="Terminal" type="Terminal" parent="." unique_id=91870620]
 z_index = 4096
 layout_mode = 1
@@ -44,14 +52,6 @@ position = Vector2(782.69006, -67)
 scale = Vector2(0.325, 0.325)
 texture = ExtResource("6_8g2d6")
 
-[node name="CaptureViewport" type="SubViewport" parent="Terminal" unique_id=180009778]
-
-[node name="BG" type="Sprite2D" parent="Terminal/CaptureViewport" unique_id=1370447051]
-z_index = -999
-position = Vector2(1055.3743, 333.225)
-scale = Vector2(0.10562499, 0.10562499)
-texture = ExtResource("6_8g2d6")
-
 [node name="PTY" type="PTY" parent="Terminal" unique_id=1247056044]
 cols = 96
 rows = 19
@@ -59,7 +59,7 @@ terminal_path = NodePath("..")
 
 [node name="PostProcessing" type="Node" parent="Terminal" unique_id=176637153 node_paths=PackedStringArray("CaptureViewport", "DebugOutput")]
 script = ExtResource("2_yox5o")
-CaptureViewport = NodePath("../CaptureViewport")
+CaptureViewport = NodePath("../../CaptureViewport")
 DebugOutput = NodePath("../BlurOutput")
 
 [node name="BlurH" type="SubViewport" parent="Terminal/PostProcessing" unique_id=290924783]
