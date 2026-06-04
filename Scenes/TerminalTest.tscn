@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://jewcogosrncc"]
+
+[ext_resource type="Script" uid="uid://mhmxqtfpmkej" path="res://Scripts/Terminal/test_terminal.gd" id="1_8pl2c"]
+
+[node name="TerminalTest" type="Control" unique_id=887232427]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Terminal" type="Terminal" parent="." unique_id=91870620]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8pl2c")
+
+[node name="PTY" type="PTY" parent="Terminal" unique_id=1247056044]
+cols = 99
+rows = 38
+terminal_path = NodePath("..")
+
+[connection signal="data_sent" from="Terminal" to="Terminal/PTY" method="write"]
+[connection signal="size_changed" from="Terminal" to="Terminal/PTY" method="resizev"]
+[connection signal="data_received" from="Terminal/PTY" to="Terminal" method="write"]
