@@ -26,11 +26,11 @@ public abstract partial class PostProcessModule : SubViewport
     public virtual void Initialize(Vector2I renderSize)
     {
         RenderSize = renderSize;
-        Size = RenderSize;
+        Size = renderSize;
         TransparentBg = true;
         HandleInputLocally = false;
         RenderTargetClearMode = ClearMode.Always;
-        RenderTargetUpdateMode = UpdateMode.Once;
+        RenderTargetUpdateMode = UpdateMode.Always;
 
         OnInitialize();
     }

@@ -15,14 +15,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="BlurOutput" type="TextureRect" parent="." unique_id=1040386824]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
 [node name="Terminal" type="Terminal" parent="." unique_id=91870620]
 z_index = 4096
 layout_mode = 1
@@ -37,6 +29,14 @@ offset_bottom = -18.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("1_8pl2c")
+
+[node name="BlurOutput" type="TextureRect" parent="Terminal" unique_id=1040386824]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="BG" type="Sprite2D" parent="Terminal" unique_id=2068820245]
 z_index = -999
@@ -60,7 +60,7 @@ terminal_path = NodePath("..")
 [node name="PostProcessing" type="Node" parent="Terminal" unique_id=176637153 node_paths=PackedStringArray("CaptureViewport", "DebugOutput")]
 script = ExtResource("2_yox5o")
 CaptureViewport = NodePath("../CaptureViewport")
-DebugOutput = NodePath("../../BlurOutput")
+DebugOutput = NodePath("../BlurOutput")
 
 [node name="BlurH" type="SubViewport" parent="Terminal/PostProcessing" unique_id=290924783]
 script = ExtResource("3_8g2d6")
