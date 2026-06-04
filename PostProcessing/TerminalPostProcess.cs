@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 
 /// <summary>
-/// Runs a modular multi-pass post-processing pipeline using SubViewports as render targets.
-/// Attach this to a CanvasLayer or Node that owns the post-process chain.
+/// Runs a modular multi-pass post-processing pipeline.
+/// The source comes from a capture SubViewport that is resized to a fixed-height render size.
 /// </summary>
 public partial class TerminalPostProcess : Node
 {
     [Export]
-    public Vector2I RenderSize { get; set; } = new Vector2I(1280, 720);
+    public int TargetRenderHeight { get; set; } = 480;
 
     [Export]
     public bool AutoInitializeOnReady { get; set; } = true;
@@ -17,22 +17,45 @@ public partial class TerminalPostProcess : Node
     [Export]
     public bool ProcessEveryFrame { get; set; } = true;
 
-    /// <summary>
-    /// Optional source texture for the first pass.
-    /// If null, you can provide one manually when calling Execute().
-    /// </summary>
     [Export]
-    public Texture2D SourceTexture { get; set; }
+    public SubViewport CaptureViewport { get; set; }
+
+    [Export]
+    public TextureRect DebugOutput { get; set; }
 
     private readonly List<PostProcessModule> _modules = new();
 
     private Texture2D _finalOutput;
+    private Vector2I _renderSize = new Vector2I(854, 480);
 
-    public IReadOnlyList<PostProcessModule> Modules => _modules;
-    public Texture2D FinalOutput => _finalOutput;
+    public IReadOnlyList<PostProcessModule> Modules
+    {
+        get
+        {
+            return _modules;
+        }
+    }
+
+    public Texture2D FinalOutput
+    {
+        get
+        {
+            return _finalOutput;
+        }
+    }
+
+    public Vector2I RenderSize
+    {
+        get
+        {
+            return _renderSize;
+        }
+    }
 
     public override void _Ready()
     {
+        UpdateRenderSizeFromWindow();
+
         if (AutoInitializeOnReady)
         {
             InitializeModules();
@@ -42,12 +65,22 @@ public partial class TerminalPostProcess : Node
     public override void _Process(double delta)
     {
         if (!ProcessEveryFrame)
+        {
             return;
+        }
 
-        if (SourceTexture == null)
-            return;
+        Vector2I expected = CalculateRenderSizeFromAppAspect();
+        if (expected != _renderSize)
+        {
+            ResizePipeline(expected);
+        }
 
-        Execute(SourceTexture);
+        Execute();
+
+        if (DebugOutput != null)
+        {
+            DebugOutput.Texture = _finalOutput;
+        }
     }
 
     public void AddModule(PostProcessModule module)
@@ -59,87 +92,117 @@ public partial class TerminalPostProcess : Node
         }
 
         if (_modules.Contains(module))
+        {
             return;
+        }
 
         _modules.Add(module);
 
+        if (module.GetParent() != this)
+        {
+            AddChild(module);
+        }
+
         if (IsInsideTree())
         {
-            if (module.GetParent() != this)
-                AddChild(module);
-
-            module.Initialize(RenderSize);
+            module.Initialize(_renderSize);
         }
-    }
-
-    public bool RemoveModule(PostProcessModule module)
-    {
-        if (module == null)
-            return false;
-
-        bool removed = _modules.Remove(module);
-
-        if (removed)
-            module.Cleanup();
-
-        return removed;
-    }
-
-    public void ClearModules()
-    {
-        foreach (PostProcessModule module in _modules)
-            module?.Cleanup();
-
-        _modules.Clear();
-        _finalOutput = null;
     }
 
     public void InitializeModules()
     {
+        if (CaptureViewport != null)
+        {
+            CaptureViewport.Size = _renderSize;
+            CaptureViewport.TransparentBg = false;
+            CaptureViewport.HandleInputLocally = false;
+            CaptureViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
+            CaptureViewport.RenderTargetClearMode = SubViewport.ClearMode.Always;
+        }
+
         foreach (PostProcessModule module in _modules)
         {
             if (module == null)
+            {
                 continue;
+            }
 
             if (module.GetParent() != this)
+            {
                 AddChild(module);
+            }
 
-            module.Initialize(RenderSize);
+            module.Initialize(_renderSize);
         }
     }
 
     public void ResizePipeline(Vector2I newSize)
     {
-        RenderSize = newSize;
+        _renderSize = newSize;
+
+        if (CaptureViewport != null)
+        {
+            CaptureViewport.Size = _renderSize;
+        }
 
         foreach (PostProcessModule module in _modules)
-            module?.Resize(newSize);
+        {
+            module?.Resize(_renderSize);
+        }
+
+        GD.Print($"TerminalPostProcess resized to {_renderSize}.");
     }
 
-    public Texture2D Execute(Texture2D input)
+    public void UpdateRenderSizeFromWindow()
     {
-        if (input == null)
+        ResizePipeline(CalculateRenderSizeFromAppAspect());
+    }
+
+    public Vector2I CalculateRenderSizeFromAppAspect()
+    {
+        Vector2 windowSize = GetViewport().GetVisibleRect().Size;
+
+        int safeHeight = Mathf.Max(1, TargetRenderHeight);
+        float aspect = windowSize.Y <= 0 ? (16.0f / 9.0f) : ((float)windowSize.X / windowSize.Y);
+        int width = Mathf.Max(1, Mathf.RoundToInt(safeHeight * aspect));
+
+        return new Vector2I(width, safeHeight);
+    }
+
+    public Texture2D Execute()
+    {
+        if (CaptureViewport == null)
         {
-            GD.PushWarning("TerminalPostProcess.Execute called with null input.");
+            GD.PushWarning("TerminalPostProcess.Execute called with null CaptureViewport.");
             return null;
         }
 
-        Texture2D current = input;
+        Texture2D current = CaptureViewport.GetTexture();
+
+        if (current == null)
+        {
+            GD.PushWarning("TerminalPostProcess.Execute: CaptureViewport texture is null.");
+            return null;
+        }
 
         foreach (PostProcessModule module in _modules)
         {
             if (module == null)
+            {
                 continue;
+            }
 
             if (!module.Enabled)
+            {
                 continue;
+            }
 
             current = module.DrawTexture(current);
 
             if (current == null)
             {
                 GD.PushWarning($"Module '{module.Name}' returned null output texture.");
-                break;
+                return null;
             }
         }
 

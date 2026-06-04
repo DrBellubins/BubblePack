@@ -22,14 +22,12 @@ public partial class GaussianBlur : PostProcessModule
 
     protected override void OnInitialize()
     {
-        _activeShader = Direction == BlurDirection.Horizontal
-            ? HorizontalShader
-            : VerticalShader;
+        UpdateActiveShader();
     }
 
     protected override void OnResize(Vector2I newSize)
     {
-        // Nothing special needed here for fixed-kernel blur.
+        UpdateActiveShader();
     }
 
     public override Texture2D DrawTexture(Texture2D input)
@@ -58,5 +56,12 @@ public partial class GaussianBlur : PostProcessModule
                 ));
             }
         );
+    }
+
+    private void UpdateActiveShader()
+    {
+        _activeShader = Direction == BlurDirection.Horizontal
+            ? HorizontalShader
+            : VerticalShader;
     }
 }

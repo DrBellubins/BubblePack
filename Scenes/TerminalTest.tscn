@@ -15,6 +15,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="BlurOutput" type="TextureRect" parent="." unique_id=1040386824]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="Terminal" type="Terminal" parent="." unique_id=91870620]
 z_index = 4096
 layout_mode = 1
@@ -30,14 +38,29 @@ grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("1_8pl2c")
 
+[node name="BG" type="Sprite2D" parent="Terminal" unique_id=2068820245]
+z_index = -999
+position = Vector2(782.69006, -67)
+scale = Vector2(0.325, 0.325)
+texture = ExtResource("6_8g2d6")
+
+[node name="CaptureViewport" type="SubViewport" parent="Terminal" unique_id=180009778]
+
+[node name="BG" type="Sprite2D" parent="Terminal/CaptureViewport" unique_id=1370447051]
+z_index = -999
+position = Vector2(1055.3743, 333.225)
+scale = Vector2(0.10562499, 0.10562499)
+texture = ExtResource("6_8g2d6")
+
 [node name="PTY" type="PTY" parent="Terminal" unique_id=1247056044]
 cols = 96
 rows = 19
 terminal_path = NodePath("..")
 
-[node name="PostProcessing" type="Node" parent="Terminal" unique_id=176637153]
+[node name="PostProcessing" type="Node" parent="Terminal" unique_id=176637153 node_paths=PackedStringArray("CaptureViewport", "DebugOutput")]
 script = ExtResource("2_yox5o")
-RenderSize = Vector2i(480, 270)
+CaptureViewport = NodePath("../CaptureViewport")
+DebugOutput = NodePath("../../BlurOutput")
 
 [node name="BlurH" type="SubViewport" parent="Terminal/PostProcessing" unique_id=290924783]
 script = ExtResource("3_8g2d6")
@@ -49,11 +72,6 @@ script = ExtResource("3_8g2d6")
 Direction = 1
 HorizontalShader = ExtResource("4_cnovi")
 VerticalShader = ExtResource("5_mgsg6")
-
-[node name="PexelsRompalliharish1698618" type="Sprite2D" parent="." unique_id=2068820245]
-position = Vector2(801.00006, 355)
-scale = Vector2(0.325, 0.325)
-texture = ExtResource("6_8g2d6")
 
 [connection signal="data_sent" from="Terminal" to="Terminal/PTY" method="write"]
 [connection signal="size_changed" from="Terminal" to="Terminal/PTY" method="resizev"]
