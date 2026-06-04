@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://jewcogosrncc"]
 
 [ext_resource type="Script" uid="uid://mhmxqtfpmkej" path="res://Scripts/Terminal/test_terminal.gd" id="1_8pl2c"]
+[ext_resource type="Script" uid="uid://c0k82uptsm25t" path="res://PostProcessing/TerminalPostProcess.cs" id="2_yox5o"]
+[ext_resource type="Script" uid="uid://ccedcuya3vlrq" path="res://PostProcessing/Blur/GaussianBlur.cs" id="3_8g2d6"]
+[ext_resource type="Shader" uid="uid://clbvnadxkhqn2" path="res://PostProcessing/Blur/GaussianBlurHorizontal.gdshader" id="4_cnovi"]
+[ext_resource type="Shader" uid="uid://bdkgfd7i12q6i" path="res://PostProcessing/Blur/GaussianBlurVertical.gdshader" id="5_mgsg6"]
+[ext_resource type="Texture2D" uid="uid://cpqt6vjo3p416" path="res://BGs/pexels-rompalliharish-1698618.jpg" id="6_8g2d6"]
 
 [node name="TerminalTest" type="Control" unique_id=887232427]
 layout_mode = 3
@@ -11,18 +16,44 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Terminal" type="Terminal" parent="." unique_id=91870620]
+z_index = 4096
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 18.31
+offset_top = -478.0
+offset_right = -22.689941
+offset_bottom = -18.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 script = ExtResource("1_8pl2c")
 
 [node name="PTY" type="PTY" parent="Terminal" unique_id=1247056044]
-cols = 99
-rows = 38
+cols = 96
+rows = 19
 terminal_path = NodePath("..")
+
+[node name="PostProcessing" type="Node" parent="Terminal" unique_id=176637153]
+script = ExtResource("2_yox5o")
+RenderSize = Vector2i(480, 270)
+
+[node name="BlurH" type="SubViewport" parent="Terminal/PostProcessing" unique_id=290924783]
+script = ExtResource("3_8g2d6")
+HorizontalShader = ExtResource("4_cnovi")
+VerticalShader = ExtResource("5_mgsg6")
+
+[node name="BlurV" type="SubViewport" parent="Terminal/PostProcessing" unique_id=1162601498]
+script = ExtResource("3_8g2d6")
+Direction = 1
+HorizontalShader = ExtResource("4_cnovi")
+VerticalShader = ExtResource("5_mgsg6")
+
+[node name="PexelsRompalliharish1698618" type="Sprite2D" parent="." unique_id=2068820245]
+position = Vector2(801.00006, 355)
+scale = Vector2(0.325, 0.325)
+texture = ExtResource("6_8g2d6")
 
 [connection signal="data_sent" from="Terminal" to="Terminal/PTY" method="write"]
 [connection signal="size_changed" from="Terminal" to="Terminal/PTY" method="resizev"]

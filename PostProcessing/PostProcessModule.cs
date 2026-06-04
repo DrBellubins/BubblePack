@@ -5,7 +5,7 @@ using System;
 /// Base class for a modular post-process stage.
 /// Each module owns an output SubViewport that acts as its render target.
 /// </summary>
-public abstract partial class PostProcessModule : Node
+public abstract partial class PostProcessModule : SubViewport
 {
     [Export]
     public bool Enabled { get; set; } = true;
@@ -14,16 +14,12 @@ public abstract partial class PostProcessModule : Node
     public string ModuleName { get; set; } = "PostProcessModule";
 
     protected Vector2I RenderSize;
-    protected SubViewport OutputViewport;
 
     public Texture2D OutputTexture
     {
         get
         {
-            if (OutputViewport == null)
-                return null;
-
-            return OutputViewport.GetTexture();
+            return base.GetTexture();
         }
     }
 
@@ -31,17 +27,7 @@ public abstract partial class PostProcessModule : Node
     {
         RenderSize = renderSize;
 
-        if (OutputViewport == null)
-        {
-            OutputViewport = PostProcessingUtils.CreateRenderViewport(
-                $"{ModuleName}_Output",
-                RenderSize
-            );
-
-            AddChild(OutputViewport);
-        }
-        else
-            OutputViewport.Size = RenderSize;
+        base.Size = RenderSize;
 
         OnInitialize();
     }
@@ -49,9 +35,8 @@ public abstract partial class PostProcessModule : Node
     public virtual void Resize(Vector2I renderSize)
     {
         RenderSize = renderSize;
-
-        if (OutputViewport != null)
-            OutputViewport.Size = RenderSize;
+        
+        base.Size = RenderSize;
 
         OnResize(renderSize);
     }
@@ -59,11 +44,6 @@ public abstract partial class PostProcessModule : Node
     public virtual void Cleanup()
     {
         OnCleanup();
-
-        if (IsInstanceValid(OutputViewport))
-            OutputViewport.QueueFree();
-
-        OutputViewport = null;
     }
 
     /// <summary>
