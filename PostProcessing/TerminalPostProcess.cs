@@ -56,10 +56,11 @@ public partial class TerminalPostProcess : Node
     {
         UpdateRenderSizeFromWindow();
 
+        AddModule(GetNode<PostProcessModule>("BlurH"));
+        AddModule(GetNode<PostProcessModule>("BlurV"));
+
         if (AutoInitializeOnReady)
-        {
             InitializeModules();
-        }
     }
 
     public override void _Process(double delta)
@@ -75,11 +76,9 @@ public partial class TerminalPostProcess : Node
             ResizePipeline(expected);
         }
 
-        Execute();
-
-        if (DebugOutput != null)
+        if (DebugOutput != null && CaptureViewport != null)
         {
-            DebugOutput.Texture = _finalOutput;
+            DebugOutput.Texture = CaptureViewport.GetTexture();
         }
     }
 
@@ -92,21 +91,15 @@ public partial class TerminalPostProcess : Node
         }
 
         if (_modules.Contains(module))
-        {
             return;
-        }
 
         _modules.Add(module);
 
         if (module.GetParent() != this)
-        {
             AddChild(module);
-        }
 
         if (IsInsideTree())
-        {
             module.Initialize(_renderSize);
-        }
     }
 
     public void InitializeModules()
