@@ -3,7 +3,7 @@ using System;
 
 /// <summary>
 /// Base class for a modular post-process stage.
-/// Each module owns an output SubViewport that acts as its render target.
+/// Each module is itself a SubViewport render target.
 /// </summary>
 public abstract partial class PostProcessModule : SubViewport
 {
@@ -19,15 +19,18 @@ public abstract partial class PostProcessModule : SubViewport
     {
         get
         {
-            return base.GetTexture();
+            return GetTexture();
         }
     }
 
     public virtual void Initialize(Vector2I renderSize)
     {
         RenderSize = renderSize;
-
-        base.Size = RenderSize;
+        Size = RenderSize;
+        TransparentBg = true;
+        HandleInputLocally = false;
+        RenderTargetClearMode = ClearMode.Always;
+        RenderTargetUpdateMode = UpdateMode.Once;
 
         OnInitialize();
     }
@@ -35,8 +38,7 @@ public abstract partial class PostProcessModule : SubViewport
     public virtual void Resize(Vector2I renderSize)
     {
         RenderSize = renderSize;
-        
-        base.Size = RenderSize;
+        Size = RenderSize;
 
         OnResize(renderSize);
     }
@@ -46,9 +48,6 @@ public abstract partial class PostProcessModule : SubViewport
         OnCleanup();
     }
 
-    /// <summary>
-    /// Performs this pass and returns the output texture for the next stage.
-    /// </summary>
     public abstract Texture2D DrawTexture(Texture2D input);
 
     protected virtual void OnInitialize()
