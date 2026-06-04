@@ -15,6 +15,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=2138425007]
+position = Vector2(680, 367.5)
+scale = Vector2(7.8, 4.675)
+copy_mode = 2
+
 [node name="CaptureViewport" type="SubViewport" parent="." unique_id=180009778]
 
 [node name="BG" type="Sprite2D" parent="CaptureViewport" unique_id=1370447051]
@@ -22,6 +27,7 @@ z_index = -999
 position = Vector2(1055.3743, 333.225)
 scale = Vector2(0.10562499, 0.10562499)
 texture = ExtResource("6_8g2d6")
+offset = Vector2(-9000, -6.595)
 
 [node name="Terminal" type="Terminal" parent="." unique_id=91870620]
 z_index = 4096
